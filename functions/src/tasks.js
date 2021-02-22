@@ -44,15 +44,17 @@ exports.postTask = (req, res) => {
       this.getTasks(req, res);
     })
     .catch((err) => res.status(500).send("POST FAILED" + err));
-  
-};
-exports.patchTask = (req, res) => {
-  dbAuth();
-  db.collection("tasks").doc(req.params.taskId).update()
+    
+  };
+  exports.patchTask = (req, res) => {
+    if (!req.body || !req.body.taskId ) {
+      res.status(400).send("Invalid request");
+    dbAuth();
+  db.collection("tasks").doc(req.params.taskId).update(req.body)
         .then(() => {
             res.status(200).json({
             status: 'successfully successful success',
-            message: 'Event updated',
+            message: 'Task updated',
             statusCode: '204'
             })
         })
@@ -60,7 +62,7 @@ exports.patchTask = (req, res) => {
             res.status(500).send ({
                 status: 'errrrrr',
                 data: err,
-                message: 'failed to update',
+                message: 'Failed to update',
                 statusCode: '500'
             })
         })
